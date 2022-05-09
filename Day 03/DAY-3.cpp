@@ -38,8 +38,8 @@ public:
             visit[i] = move(temp);
         }
     }
-    // to find the neighbours of a building num is to assign that particular value to visit
-    void findsize(int Xcor, int Ycor, int num)
+   
+    void path(int Xcor, int Ycor, int num,bool control)
     {
         if (visit[Xcor][Ycor] == num)
         {
@@ -47,67 +47,41 @@ public:
         }
         else
         {
-            neighbours += building2D[Xcor][Ycor];
-            if(neighbours!=0)visit[Xcor][Ycor]=num;
-            if (Xcor + 1 < row && building2D[Xcor + 1][Ycor] != 0)
-            {
-                visit[Xcor][Ycor] = num;
-                findsize(Xcor + 1, Ycor, num);
+            // to find the neighbours of a building num is to assign that particular value to visit
+            if(control){
+                neighbours += building2D[Xcor][Ycor];
+                if(neighbours!=0)visit[Xcor][Ycor]=num;
             }
-            if (Xcor - 1 >= 0 && building2D[Xcor - 1][Ycor] != 0)
-            {
-                visit[Xcor][Ycor] = num;
-                findsize(Xcor - 1, Ycor, num);
-            }
-            if (Ycor + 1 < column && building2D[Xcor][Ycor + 1] != 0)
-            {
-                visit[Xcor][Ycor] = num;
-                findsize(Xcor, Ycor + 1, num);
-            }
-            if (Ycor - 1 >= 0 && building2D[Xcor][Ycor - 1] != 0)
-            {
-                visit[Xcor][Ycor] = num;
-                findsize(Xcor, Ycor - 1, num);
-            }
-            return;
-        }
-    }
-    void path(int Xcor, int Ycor, int num)
-    {
-        if (visit[Xcor][Ycor] == num)
-        {
-            return;
-        }
-        else
-        {
-            for (int i = 0; i < no_of_leaderGroup; i++)
-            {
+            else{
+                for (int i = 0; i < no_of_leaderGroup; i++)
+                {
                 int x, y;
                 x = leader_group[i] / 10;
                 y = leader_group[i] % 10;
-                
                 if ((abs(Xcor - x) + abs(Ycor - y) - 1) < min_dist)
                     min_dist = abs(Xcor - x) + abs(Ycor - y) - 1;
+                }
             }
+           
             if (Xcor + 1 < row && building2D[Xcor + 1][Ycor] != 0)
             {
                 visit[Xcor][Ycor] = num;
-                path(Xcor + 1, Ycor, num);
+                path(Xcor + 1, Ycor, num,control);
             }
             if (Xcor - 1 >= 0 && building2D[Xcor - 1][Ycor] != 0)
             {
                 visit[Xcor][Ycor] = num;
-                path(Xcor - 1, Ycor, num);
+                path(Xcor - 1, Ycor, num,control);
             }
             if (Ycor + 1 < column && building2D[Xcor][Ycor + 1] != 0)
             {
                 visit[Xcor][Ycor] = num;
-                path(Xcor, Ycor + 1, num);
+                path(Xcor, Ycor + 1, num,control);
             }
             if (Ycor - 1 >= 0 && building2D[Xcor][Ycor - 1] != 0)
             {
                 visit[Xcor][Ycor] = num;
-                path(Xcor, Ycor - 1, num);
+                path(Xcor, Ycor - 1, num,control);
             }
             return ;
         }
@@ -125,7 +99,7 @@ public:
             {
                 if (building2D[i][j] != 0)
                 {
-                    findsize(i, j, 1);
+                    path(i, j, 1,true);
                     if (neighbours != 0)
                     {
                         group[no_of_group] = neighbours;
@@ -167,7 +141,7 @@ public:
         int i, j;
         i = start / 10;
         j = start % 10;
-        findsize(i, j, 3);
+        path(i, j, 3,true);
         //array of leader group indexes
         leader_group = make_unique<int[]>(row * column);
         no_of_leaderGroup=0;
@@ -179,7 +153,7 @@ public:
                     no_of_leaderGroup++;
                 }
         }
-        cout << "\n the path for respective groups:\n";
+        cout << "\nthe path for respective groups:\n";
         for (i = 0; i < row; i++)
         {
             for (j = 0; j < column; j++)
@@ -187,7 +161,7 @@ public:
                 if (visit[i][j] == 1)
                 {
                     min_dist=9999; 
-                    path(i, j, 2);
+                    path(i, j, 2,false);
                     cout << min_dist << " ";
                 }
             }
