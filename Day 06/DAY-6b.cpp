@@ -47,11 +47,7 @@ int main(){
          // speciffic handling for all exceptions extending std::exception, except
          cerr << "\nError occurred in main: " << ex.what() << endl;
     }
-    // speciffic handling for runtime_error
-    catch(const std::runtime_error& re)
-    {
-       cerr << "Runtime error: " << re.what() << std::endl;
-    }
+    
     //to handle no such notable exceptions
     catch (...) {
       // Code executed when exception Catch : for default
