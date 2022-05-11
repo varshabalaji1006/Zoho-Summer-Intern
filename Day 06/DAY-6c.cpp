@@ -111,7 +111,7 @@ int main(){
     int rollno,age,x;
     string name,course;
     do{
-        if(Student::count>1){
+        if(Student::count>=1){
             cout<<"\n Only one object can be created";
             break;
         }
