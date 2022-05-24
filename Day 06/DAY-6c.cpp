@@ -83,8 +83,9 @@ class Student{
             }
         }
         if(!check){
+         valid=false;
         throw course_invalid;
-        valid=false;
+       
         }
         return true;
         }
