@@ -96,34 +96,17 @@ class broker{
     public:
     //comapring n objects which may be two or three 
     void compare(BankwithLoan b[],int n){
-    float minrate=999999,maxrate=0;
-    string min,max;
-    for(int i=0;i<n;i++)
-       for(int j=i+1;j<=n-i-1;j++){
-            if(b[i]<b[j]){
-                if( b[i].rate<minrate){
-                  min=b[i].name;
-                  minrate=b[i].rate;
-                }
-                if(b[j].rate>maxrate){
-                  max=b[j].name;
-                  maxrate=b[j].rate;
-                }
-            }
-            else{
-                if(b[j].rate<minrate){
-                  min=b[j].name;
-                  minrate=b[i].rate;
-                }
-                if(b[i].rate>maxrate){
-                  max=b[i].name;
-                  maxrate=b[j].rate;
-                }
-            }
-        }
+    int  min_index=0,max_index=0;
+    for(int i=1;i<n;i++){
+            if(b[i]<b[min_index])
+                min_index=i;
+            else if(b[max_index]<b[i])
+                max_index=i;
+                
+    }
     cout<<"Among the given Banks\n";
-    cout<<"the bank with high rate:"<<max;
-    cout<<"\nthe bank with low rate:"<<min;
+    cout<<"the bank with high rate:"<<b[max_index].name;
+    cout<<"\nthe bank with low rate:"<<b[min_index].name;
     }
     //To print all bank details
     void print(BankwithLoan b){
