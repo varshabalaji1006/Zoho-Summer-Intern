@@ -35,12 +35,12 @@ class Rectangle{
        }
        //Copy Constructor
        Rectangle(Rectangle &r){
-           left=r.left;
-           width=r.width;
-           height=r.height;
-           top=r.top;
+           left=new int(*r.left);
+           width=new int(*r.width);
+           height=new int(*r.height);
+           top=new int(*r.top);
            r.area=new int(*width * *height);
-           area=r.area;
+           area=new int(*r.area);
        }
        void print(){
            cout<<"\nLeft   : "<<*left;
@@ -58,6 +58,7 @@ class Rectangle{
            delete(width);
            delete(height);
            delete(area);
+
        }
 };
 int main(){
