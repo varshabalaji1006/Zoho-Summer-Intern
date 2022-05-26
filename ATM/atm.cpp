@@ -177,7 +177,6 @@ class atm_process:public ATM{
             cout<<"\nATM does not have sufficient money to vend\n";
         else if(amount>cust[user].balance)
             cout<<"\nAccount balance is lower than entered withdrawal amount\n";
-        //For amount<5000
         else if(amount<=5000){
             if(amount>=3000){
                 if(count_2000==0){
@@ -187,12 +186,10 @@ class atm_process:public ATM{
                 amount-=2000;
                 a++;
             }
-            //checking minimum condtion of 5000
             if(amount>=1000 && count_500==0){
                 cout<<"\n500 is not sufficient\nMinimun Condtion not satisifed\n";
                 return;
             }
-            //calculating the 500 denomination
             if(amount>=1000){
                 temp=(amount>=1500)?amount-1000:amount;
                 if(temp>=(count_500*500)){
@@ -204,12 +201,10 @@ class atm_process:public ATM{
                     amount-=b*500;
                 }
             }
-            //checking minimum condition of 100
             if(amount>1000 && count_100<10){
                 cout<<"\n100 is not sufficient\nMinimun Condtion not satisifed\n";
                 return;
             }
-            //caluculating denomination of 100
             if(amount>0){
                 c=amount/100;
                 if(c>15){
@@ -234,18 +229,18 @@ class atm_process:public ATM{
             //calculating the remaining 2000 amount available 
             temp=(count_2000-2)*2000;
             if(amount>=temp){
-                amount-=count_2000*2000;
-                a+=count_2000;
+                amount-=(count_2000-2)*2000;
+                a+=count_2000-2;
             }
             else if(amount>=2000){
                 a+=amount/2000;
                 amount-=a*2000;
             }
-            //calculating the remaining 500 amount available
+            //calculating the remaining 2000 amount available
             temp=(count_500-2)*500;
             if(amount>=temp){
-                amount-=count_500*500;
-                b+=count_500;
+                amount-=(count_500-2)*500;
+                b+=count_500-2;
             }
             else if(amount>=500){
                 b+=amount/500;
@@ -264,7 +259,6 @@ class atm_process:public ATM{
         if(amount>0){
             cout<<"\nDenomination not available\n";
         }
-        //if withdrawal successful updating the contents
         else{
             cout<<"\nWithdrawal Succesful!\n\nDenominations are:\n";
             cout<<"\n2000 - "<<a;
@@ -279,7 +273,6 @@ class atm_process:public ATM{
             fstream transaction;
             string val=to_string(cust[user].acc_no)+"_transaction.txt";
             transaction.open(val,ios::app);
-            //creating an asynchronus thread
             future<void>thread_w=async(launch::async,[&](){
                 transaction<<transaction_number<<"\t\tCash Withdrawal\t"<<"\tDebit\t\t"<<temp_amount<<"\t"<<cust[user].balance<<endl;
                 this_thread::sleep_for(5000ms);
@@ -293,7 +286,6 @@ class atm_process:public ATM{
         bool check=false;
         cout<<"\nEnter Receiver : ";
         cin>>r;
-        //checking if receiver is valid
         for(int i=0;i<5;i++){
             if(r==cust[i].acc_no && i!=user){
                 receiver=i;
@@ -318,7 +310,6 @@ class atm_process:public ATM{
             fstream fsender;
             string val = to_string(cust[user].acc_no) + "_transaction.txt";
             fsender.open(val,ios::app);
-            //creating a thread for sender
             future<void>thread_s=async(launch::async,[&](){
                 fsender<<transaction_number<<"\t\tTransfer to "<<r<<"\t\tDebit\t\t"<<amount<<"\t"<<cust[user].balance<<endl;
                 this_thread::sleep_for(5000ms);
@@ -326,7 +317,6 @@ class atm_process:public ATM{
             val = to_string(cust[receiver].acc_no) + "_transaction.txt";
             fstream freceiver;
             freceiver.open(val,ios::app);
-            //creating a thread for receiver
             future<void>thread_r=async(launch::async,[&](){
                 freceiver<<transaction_number<<"\t\tTransfer from "<<cust[user].acc_no<<"\tCredit\t\t"<<amount<<"\t"<<cust[receiver].balance<<endl;
                 this_thread::sleep_for(5000ms);
@@ -343,17 +333,13 @@ class atm_process:public ATM{
         string line;
         ifstream userfile(val);
         userfile.unsetf(std::ios_base::skipws);
-        //getting number of transaction
         unsigned line_count = std::count(istream_iterator<char>(userfile),istream_iterator<char>(),'\n');
         int start=(line_count<10)?1:line_count-10+1;
-        //moving file pointer to begining
         userfile.clear();
         userfile.seekg(0,ios::beg);
-        //skipping the precedence 10 transaction
         for(int i=1;i<start;i++)
             getline(userfile,line);
         cout<<"\nTransaction_N0   Description\t\tCredit / Debit   Amount   Closing Balance\n";
-        //printing last 10 transaction
         for(int i=start;i<=line_count;i++){
             getline(userfile,line);
             cout<<line<<endl;
