@@ -229,24 +229,26 @@ class atm_process:public ATM{
                 cout<<"\n500 is not sufficient\nMinimun Condtion not satisifed\n";
                 return;
             }
+            amount-=5000;
+            a=2;b=2;
             //calculating the remaining 2000 amount available 
-            temp=count_2000*2000;
+            temp=(count_2000-2)*2000;
             if(amount>=temp){
                 amount-=count_2000*2000;
-                a=count_2000;
+                a+=count_2000;
             }
             else if(amount>=2000){
-                a=amount/2000;
+                a+=amount/2000;
                 amount-=a*2000;
             }
             //calculating the remaining 500 amount available
-            temp=count_500*500;
+            temp=(count_500-2)*500;
             if(amount>=temp){
                 amount-=count_500*500;
-                b=count_500;
+                b+=count_500;
             }
             else if(amount>=500){
-                b=amount/500;
+                b+=amount/500;
                 amount-=b*500;
             }
             if(amount>1000){
