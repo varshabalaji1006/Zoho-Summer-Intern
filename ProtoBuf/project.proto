@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+message User
+{
+    int32 id=1;
+    string name=2;
+    string email=3;
+    string password=4;
+    string location=5;
+}
+
+message UserBook
+{
+    repeated User user=1;
+}
+
+message Msg
+{
+    string line=1;
+}
+
+message Version
+{
+    int32 id=1;
+    string user_id=2;
+    string name=3;
+    int32 operations=4;
+    string time=5;
+    repeated Msg msg=6; 
+}
+message Project
+{
+    int32 version_no=1;
+    repeated Version version=2;
+
+}
