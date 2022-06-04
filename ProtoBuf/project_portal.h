@@ -41,7 +41,7 @@ public:
             return;
         }
         // insertion the new project details in version
-        project.set_version_no(1);
+        project.set_latest_version(1);
         Version *version=project.add_version();
         // setting the values for new project
         time_t t = time(0);
@@ -59,26 +59,20 @@ public:
             cerr << "\nFailed to write address book." << endl;
             exit(0);
         }
-        fstream input(path + filename+".txt", ios::in | ios::binary);
         
-        if (!project.ParseFromIstream(&input))
-        {
-            cerr << "\nFailed to parse address book." << endl;
-            exit(0);
-        }
         cout << "\nFile Created Successfully!\n";
     }
     // a function to diplay the available projects
     void list_projects()
     {
         n = 0;
-        cout << "\nThe Available Projects \n";
+        cout << "\nThe Available Projects \n\n";
         for (const auto &entry : fs::directory_iterator(path))
         {
-            // to display only the file,logic is used
+            // to display only the file name,logic is used
             string temp = entry.path();
-            cout<<temp<<endl<<temp.find_last_of('.');
-            temp = temp.substr(temp.find_last_of('/') + 1,temp.find_last_of('.'));
+            int size=temp.find_last_of('.')-temp.find_last_of('/')-1;
+            temp = temp.substr(temp.find_last_of('/') + 1,size);
             cout << temp << endl;
             n++;
             
@@ -95,6 +89,8 @@ public:
         m->set_line(line);
         cout << "\nContent Added Succesfully\n";
         display(version);
+        // updating number of operations
+        version->set_operations(version->operations() + 1);
     }
     // a function to overwrite
     void update(Version *version)
@@ -143,6 +139,8 @@ public:
         }
         cout << "\nOverwrite Successful!\n";
         display(version);
+        // updating number of operations
+        version->set_operations(version->operations() + 1);
     }
     // function to delete single line
     void delete_line(Version *version)
@@ -180,25 +178,44 @@ public:
             cout << i + 1 << ". " << m.line() << endl;
         }
     }
+    void display_version(){
+        int v;
+        cout<<"\nThe latest Version is : "<<project.latest_version();
+        cout<<"\n\nEnter which version to Display : ";
+        cin>>v;
+        Version *version=project.mutable_version(v-1);
+        if (version->msg_size() == 0)
+        {
+            cout << "\nThe File is Empty!\n";
+            return;
+        }
+        cout << "\nThe File Cotents Are : \n";
+        for (int i = 0; i < version->msg_size(); i++)
+        {
+            const Msg &m = version->msg(i);
+            cout << i + 1 << ". " << m.line() << endl;
+        }
+    }
     void revert(string filename,Version *version)
     {
         int v;
         int status;
-        if (project.version_no() == 1)
+        if (project.latest_version() == 1)
         {
             cout << "\nCannot Revert since only one version Available\n";
             return;
         }
-        cout << "\nThe Latest Version is : " << project.version_no();
-        cout << "\nEnter the version to revert :";
+        cout << "\nThe Latest Version is : " << project.latest_version();
+        cout << "\n\nEnter the version to revert :";
         cin >> v;
-        if (v > project.version_no() || v <= 0)
+        if (v > project.latest_version() || v <= 0)
         {
             cout << "\nInvalid Version Number\n";
             return;
         }
         delete_file(version);
         Version old=project.version(v-1);
+        //copying content from the old version
         for (int i = 0; i < old.msg_size(); i++)
         {
             const Msg &m1 = old.msg(i);
@@ -212,7 +229,7 @@ public:
     void new_v(string filename,Version *version)
     {
         Version *new_version=project.add_version();
-        project.set_version_no(project.version_no() + 1);
+        project.set_latest_version(project.latest_version() + 1);
         cout << "\nCreating a new version!\n";
         // setting the new project with upgraded version
         new_version->set_id(version->id());
@@ -253,14 +270,12 @@ public:
         cout << "\nEnter the project name to Open : ";
         cin >> temp;
         filename = temp + ".txt";
-        cout<<"\nOpening :"<<path + filename;
         if (!fs::exists(path + filename))
         {
             cout << "\nFile Not Found!\n";
             return;
         }
         // getting the version details
-        cout<<"\ngetting the version";
         fstream input(path + filename, ios::in | ios::binary);
         
         if (!project.ParseFromIstream(&input))
@@ -270,7 +285,7 @@ public:
         }
         // getting the latest version project
         
-        Version *version=project.mutable_version(project.version_no()-1);
+        Version *version=project.mutable_version(project.latest_version()-1);
        // cout<<"version msg"<<version.msg()
         // doing the requirerd operations
         cout << "\nOperations Available\n\n1. Add\n2. Update\n3. Delete\n4. Display\n5. Revert\n\nEnter your choice:";
@@ -298,10 +313,12 @@ public:
             }
             cout << "\nDelete Successful!\n";
             display(version);
+            // updating number of operations
+            version->set_operations(version->operations() + 1);
             break;
         }
         case 4:
-            display(version);
+            display_version();
             break;
         case 5:
             revert(temp,version);
@@ -310,8 +327,6 @@ public:
             cout << "\nInvalid Choice\n";
             break;
         }
-        // updating number of operations
-        version->set_operations(version->operations() + 1);
         // creating a new version when the no_of_operation reaches 5
         if (version->operations() >= 5)
             new_v(temp,version);
