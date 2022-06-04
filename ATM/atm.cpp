@@ -234,7 +234,7 @@ class atm_process:public ATM{
             }
             else if(amount>=2000){
                 a+=amount/2000;
-                amount-=a*2000;
+                amount-=(a-2)*2000;
             }
             //calculating the remaining 2000 amount available
             temp=(count_500-2)*500;
@@ -244,7 +244,7 @@ class atm_process:public ATM{
             }
             else if(amount>=500){
                 b+=amount/500;
-                amount-=b*500;
+                amount-=(b-2)*500;
             }
             if(amount>1000){
                 cout<<"\nMaximum Condtion of 100 satisifed\nWithdrawal Cancelled\n";
@@ -318,7 +318,7 @@ class atm_process:public ATM{
             fstream freceiver;
             freceiver.open(val,ios::app);
             future<void>thread_r=async(launch::async,[&](){
-                freceiver<<transaction_number<<"\t\tTransfer from "<<cust[user].acc_no<<"\tCredit\t\t"<<amount<<"\t"<<cust[receiver].balance<<endl;
+                freceiver<<transaction_number<<"\t\tTransfer from "<<cust[user].acc_no<<"\t\tCredit\t\t"<<amount<<"\t"<<cust[receiver].balance<<endl;
                 this_thread::sleep_for(5000ms);
             });
             
