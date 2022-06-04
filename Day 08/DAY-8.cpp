@@ -100,7 +100,7 @@ public:
         std.push_back(temp);
         cout << "\nEnter the number:";
         cin >> temp;
-        while (!is_digits(temp) && temp.size() != 6)
+        while (!is_digits(temp) || temp.size() != 6)
         {
             cout << "\nInvalid Number.please Enter again:";
             cin >> temp;
