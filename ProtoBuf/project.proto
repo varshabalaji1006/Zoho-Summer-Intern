@@ -30,7 +30,7 @@ message Version
 }
 message Project
 {
-    int32 version_no=1;
+    int32 latest_version=1;
     repeated Version version=2;
 
 }
