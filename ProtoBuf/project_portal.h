@@ -183,18 +183,13 @@ public:
         cout<<"\nThe latest Version is : "<<project.latest_version();
         cout<<"\n\nEnter which version to Display : ";
         cin>>v;
-        Version *version=project.mutable_version(v-1);
-        if (version->msg_size() == 0)
+        if (v > project.latest_version() || v <= 0)
         {
-            cout << "\nThe File is Empty!\n";
+            cout << "\nInvalid Version Number\n";
             return;
         }
-        cout << "\nThe File Cotents Are : \n";
-        for (int i = 0; i < version->msg_size(); i++)
-        {
-            const Msg &m = version->msg(i);
-            cout << i + 1 << ". " << m.line() << endl;
-        }
+        Version *version=project.mutable_version(v-1);
+        display(version);
     }
     void revert(string filename,Version *version)
     {
